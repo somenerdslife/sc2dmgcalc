@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data.SqlClient;
 
 namespace StarCraft2Calculator
 {
@@ -43,7 +44,7 @@ namespace StarCraft2Calculator
         string[] attDmg2String = new string[2];
         string[] attDmg3String = new string[2];
 
-    //Output Variables
+        //Output Variables
         int[] armorInt = new int[2];
         int[] spAmrInt = new int[2];
         double[] dpShotDbl = new double[2];
@@ -346,6 +347,8 @@ namespace StarCraft2Calculator
                             { dmgUpgBonusInt = 1; }
                         }
 
+                        //Upgrade override will go here
+
                         //Calculates the damage per shot when applying upgrades and armor
                         dpShotDbl[i] = ((highestDmgInt[i] + (dmgUpgBonusInt * wpnUpgradesInt[i])) * atkPerShotInt[i]) - (armorInt[a] * atkPerShotInt[i]);
 
@@ -417,6 +420,7 @@ namespace StarCraft2Calculator
                     airHiDmgInt[i] = Math.Max(airDmgInt[i], Math.Max(airAtt1BonusInt[i], Math.Max(airAtt2BonusInt[i], airAtt3BonusInt[i])));
                     airHiDmgSpInt[i] = airHiDmgInt[i] + airSpDmgInt[i];
 
+
                     if (airSpellBox[i].Checked == false)
                     {
                         int dmgUpgBonusInt;
@@ -426,6 +430,8 @@ namespace StarCraft2Calculator
                         { dmgUpgBonusInt = Convert.ToInt32(Math.Round(dmgUpgBonusDbl, MidpointRounding.AwayFromZero)); }
                         else
                         { dmgUpgBonusInt = 1; }
+
+                        //Will need upgrade override
 
                         airDpShotDbl[i] = ((airHiDmgInt[i] + (dmgUpgBonusInt * wpnUpgradesInt[i])) * airAtkPerShotInt[i]) - (armorInt[a] * airAtkPerShotInt[i]);
 
@@ -700,6 +706,12 @@ namespace StarCraft2Calculator
         }
 
         private void mainForm_Load(object sender, EventArgs e)
-        {        }
+        {
+            /* This may be useful later for connecting the database
+            DataTable dt = new DataTable();
+            int positionInt = 0;
+            dt.TableName = "Table";
+            string dataSourceString = "SELECT * FROM Table"; */
+        }
     }
 }

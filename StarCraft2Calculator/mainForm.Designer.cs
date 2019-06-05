@@ -185,12 +185,17 @@
             this.rAirDmgShotLabel = new System.Windows.Forms.Label();
             this.rAirSpDmgShotStatLabel = new System.Windows.Forms.Label();
             this.ttpInfo = new System.Windows.Forms.ToolTip(this.components);
+            this.unitDataDataSet = new StarCraft2Calculator.unitDataDataSet();
+            this.attTableTableAdapter = new StarCraft2Calculator.unitDataDataSetTableAdapters.attTableTableAdapter();
+            this.tableAdapterManager = new StarCraft2Calculator.unitDataDataSetTableAdapters.TableAdapterManager();
+            this.tableTableAdapter = new StarCraft2Calculator.unitDataDataSetTableAdapters.TableTableAdapter();
+            ((System.ComponentModel.ISupportInitialize)(this.unitDataDataSet)).BeginInit();
             this.SuspendLayout();
             // 
             // separatorLabel
             // 
             this.separatorLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.separatorLabel.BackColor = System.Drawing.Color.DarkRed;
+            this.separatorLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.separatorLabel.Location = new System.Drawing.Point(449, 164);
             this.separatorLabel.Name = "separatorLabel";
             this.separatorLabel.Size = new System.Drawing.Size(5, 484);
@@ -1362,9 +1367,9 @@
             this.patchLabel.ForeColor = System.Drawing.Color.DodgerBlue;
             this.patchLabel.Location = new System.Drawing.Point(19, 70);
             this.patchLabel.Name = "patchLabel";
-            this.patchLabel.Size = new System.Drawing.Size(113, 13);
+            this.patchLabel.Size = new System.Drawing.Size(107, 13);
             this.patchLabel.TabIndex = 85;
-            this.patchLabel.Text = "Balance Patch: 3.14.0";
+            this.patchLabel.Text = "Balance Patch: 4.8.3";
             this.patchLabel.Click += new System.EventHandler(this.tb_Clicked);
             // 
             // lMaxUpgBtn
@@ -2487,6 +2492,26 @@
             this.ttpInfo.InitialDelay = 160;
             this.ttpInfo.ReshowDelay = 160;
             // 
+            // unitDataDataSet
+            // 
+            this.unitDataDataSet.DataSetName = "unitDataDataSet";
+            this.unitDataDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            // 
+            // attTableTableAdapter
+            // 
+            this.attTableTableAdapter.ClearBeforeFill = true;
+            // 
+            // tableAdapterManager
+            // 
+            this.tableAdapterManager.attTableTableAdapter = this.attTableTableAdapter;
+            this.tableAdapterManager.BackupDataSetBeforeUpdate = false;
+            this.tableAdapterManager.TableTableAdapter = this.tableTableAdapter;
+            this.tableAdapterManager.UpdateOrder = StarCraft2Calculator.unitDataDataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
+            // 
+            // tableTableAdapter
+            // 
+            this.tableTableAdapter.ClearBeforeFill = true;
+            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2653,6 +2678,7 @@
             this.Text = "StarCraft II Damage Calculator - V0.1";
             this.Load += new System.EventHandler(this.mainForm_Load);
             this.Click += new System.EventHandler(this.tb_Clicked);
+            ((System.ComponentModel.ISupportInitialize)(this.unitDataDataSet)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2815,6 +2841,10 @@
         private System.Windows.Forms.Label rAirDmgShotLabel;
         private System.Windows.Forms.Label rAirSpDmgShotStatLabel;
         private System.Windows.Forms.ToolTip ttpInfo;
+        private unitDataDataSet unitDataDataSet;
+        private unitDataDataSetTableAdapters.attTableTableAdapter attTableTableAdapter;
+        private unitDataDataSetTableAdapters.TableAdapterManager tableAdapterManager;
+        private unitDataDataSetTableAdapters.TableTableAdapter tableTableAdapter;
     }
 }
 
