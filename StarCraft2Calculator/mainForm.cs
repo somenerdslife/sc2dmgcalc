@@ -12,7 +12,7 @@ namespace StarCraft2Calculator
 {
     public partial class mainForm : Form
     {
-        // Input Variables
+        //Input Variables
         int[] hpInt = new int[2] { 0, 0 };
         int[] spInt = new int[2] { 0, 0 };
         int[] baseArmorInt = new int[2] { 0, 0 };
@@ -43,7 +43,7 @@ namespace StarCraft2Calculator
         string[] attDmg2String = new string[2];
         string[] attDmg3String = new string[2];
 
-    // Output Variables
+    //Output Variables
         int[] armorInt = new int[2];
         int[] spAmrInt = new int[2];
         double[] dpShotDbl = new double[2];
@@ -62,7 +62,7 @@ namespace StarCraft2Calculator
         double[] overkillDbl = new double[2];
         double[] airOverkillDbl = new double[2];
 
-        // Variables for calculations
+        //Variables for calculations
         int[] shotCounterInt = new int[2] { 0, 0 };
         double[] spRemainingDbl = new double[2];
         double[] hpRemainingDbl = new double[2];
@@ -79,12 +79,12 @@ namespace StarCraft2Calculator
         public mainForm()
         { InitializeComponent(); }
 
-        // Calculates as user types
+        //Calculates as the user changes input
         private void tb_TextChanged(object sender, EventArgs e)
         {
-            // [0] = Left Side, [1] = Right Side
+            //[0] = Left Side, [1] = Right Side
 
-            // Insures inputs are valid and sets input variables before proceeding with calculations
+            //Insures inputs are valid and sets input variables before proceeding with calculations
             if (int.TryParse(lHpTextBox.Text, out hpInt[0]) &&
                 int.TryParse(rHpTextBox.Text, out hpInt[1]) &&
                 int.TryParse(lSpTextBox.Text, out spInt[0]) &&
@@ -128,7 +128,7 @@ namespace StarCraft2Calculator
                 double.TryParse(lAirWpnCldnTextBox.Text, out airWpnCooldownDbl[0]) &&
                 double.TryParse(rAirWpnCldnTextBox.Text, out airWpnCooldownDbl[1]))
             {
-                // Assigns initial calculation values
+                //Assigns initial calculation values
 
                 i = 0;
                 a = 1;
@@ -154,9 +154,9 @@ namespace StarCraft2Calculator
                 attDmg3String[1] = rAttDmg3ComboBox.Text;
 
 
-                // Ensures ground and/or air is/are checked for each side
+                //Ensures ground and/or air is/are checked for each side
 
-                // For loop applies operation to left and right side
+                //For loop applies operation to left and right side
                 for (i = 0; i < 2; i++)
                 {
                     if (groundBox[i].Checked == false && airBox[i].Checked == false)
@@ -166,7 +166,7 @@ namespace StarCraft2Calculator
                     }
                 }
 
-                // Calls calculation methods
+                //Calls calculation methods
 
                 CalculateArmor();
                 CalculateDmgPerShot();
@@ -178,7 +178,7 @@ namespace StarCraft2Calculator
                 CalculateSecondsToDestroy();
                 CalculateAirSecondsToDestroy();
             }
-            else
+            else //Else input is invalid, gives an error message and removes text so default values are applied if user clicks out of the TextBox
             {
                 foreach (Control C in this.Controls)
                 {
@@ -186,7 +186,7 @@ namespace StarCraft2Calculator
                     {
                         TextBox tBox = C as TextBox;
                         if (tBox.Text != "")
-                        { MessageBox.Show("Please enter positive numerical values.", "Invalid Input", MessageBoxButtons.OK); }
+                        { MessageBox.Show("Please enter positive numerical values.", "Invalid Input", MessageBoxButtons.OK); tBox.Text = ""; }
                     }
                 }
             }
@@ -283,8 +283,7 @@ namespace StarCraft2Calculator
 
         public void CalculateArmor()
         {
-            // Calculates armor
-
+            //Calculates armor by adding base armor and armor upgrades together
             for (int i = 0; i < 2; i++)
             {
                 if (att1String[i] == "Structure" || att2String[i] == "Structure" || att3String[i] == "Structure")
@@ -293,13 +292,13 @@ namespace StarCraft2Calculator
                 spAmrInt[i] = baseSpAmrInt[i] + spUpgradesInt[i];
             }
 
-            // Displays armor stat
+            //Displays armor stats
             lAmrStatLabel.Text = armorInt[0].ToString();
             rAmrStatLabel.Text = armorInt[1].ToString();
             lSpAmrStatLabel.Text = spAmrInt[0].ToString();
             rSpAmrStatLabel.Text = spAmrInt[1].ToString();
 
-            // Resets array variable
+            //Resets array variable so both sides can be checked in the methods
             i = 0;
         }
 
@@ -313,7 +312,7 @@ namespace StarCraft2Calculator
 
             for (i = 0; i < 2; i++)
             {
-                // If/else if statement differentiates between left and right values when both sides are used for calculations
+                //If/else if statement differentiates between left and right values when both sides are used for calculations
                 if (a == i && i == 1)
                 { a--; }
                 else if (a == i && i == 0)
@@ -321,7 +320,7 @@ namespace StarCraft2Calculator
 
                 if (groundBox[a].Checked == true)
                 {
-                    // Determines highest possible damage before upgrades and armor deduction
+                    //Determines highest possible damage based on attributes and bonus damage before taking upgrades and armor into account
                     if ((attDmg1String[i] == att1String[a] || attDmg1String[i] == att2String[a] || attDmg1String[i] == att3String[a]) && attDmg1String[i] != "")
                     { att1BonusInt[i] = baseDmgInt[i] + attDmg1Int[i]; }
                     if ((attDmg2String[i] == att1String[a] || attDmg2String[i] == att2String[a] || attDmg2String[i] == att3String[a]) && attDmg2String[i] != "")
@@ -331,32 +330,33 @@ namespace StarCraft2Calculator
                     highestDmgInt[i] = Math.Max(baseDmgInt[i], Math.Max(att1BonusInt[i], Math.Max(att2BonusInt[i], att3BonusInt[i])));
                     hiDmgSpInt[i] = highestDmgInt[i] + spDmgInt[i];
 
-                    // Determines damage per shot
-
-                    // Determines spellbox selection based on array number
-                    if (spellBox[i].Checked == false)
+                    if (spellBox[i].Checked == false) //Determines damage per shot for non-spell damage
                     {
                         int dmgUpgBonusInt;
                         double dmgUpgBonusDbl = highestDmgInt[i] * 0.1;
 
-                        if (highestDmgInt[i] >= 10)
-                        { dmgUpgBonusInt = Convert.ToInt32(Math.Round(dmgUpgBonusDbl, MidpointRounding.AwayFromZero)); }
-                        else
-                        { dmgUpgBonusInt = 1; }
-                        if (dmgUpgBonusInt > 5)
-                        { dmgUpgBonusInt = 5; }
                         if (att1String[i] == "Structure" || att2String[i] == "Structure" || att3String[i] == "Structure")
                         { dmgUpgBonusInt = 0; }
+                        else
+                        {
+                            if (highestDmgInt[i] >= 14) //If damage is more than or equal to 14
+                            //Calculate the upgrade damage bonus, limited to 5
+                            { dmgUpgBonusInt = Math.Min(Convert.ToInt32(Math.Round(dmgUpgBonusDbl, MidpointRounding.AwayFromZero)), 5); }
+                            else //Else damage is less than 14, upgrade gives 1
+                            { dmgUpgBonusInt = 1; }
+                        }
 
+                        //Calculates the damage per shot when applying upgrades and armor
                         dpShotDbl[i] = ((highestDmgInt[i] + (dmgUpgBonusInt * wpnUpgradesInt[i])) * atkPerShotInt[i]) - (armorInt[a] * atkPerShotInt[i]);
 
-                        if (dpShotDbl[i] <= 0)
+                        if (dpShotDbl[i] <= 0) //If the damage per shot after applying upgrades and armor is less than or equal to 0
                         {
-                            if (baseDmgInt[i] > 0 && atkPerShotInt[i] > 0)
-                            { dpShotDbl[i] = 0.5; }
-                            else
+                            if (baseDmgInt[i] > 0 && atkPerShotInt[i] > 0) //If base damage and attack per shot are more than 0
+                            { dpShotDbl[i] = 0.5; } //Set damage per shot to minimum value of an attack, which is 0.5
+                            else //Else the unit doesn't deal damage to the opposing unit, set damage per shot to 0
                             { dpShotDbl[i] = 0; }
                         }
+                        //Do the above for damage to shields as well
                         dpShotSpDbl[i] = ((hiDmgSpInt[i] + (dmgUpgBonusInt * wpnUpgradesInt[i])) * atkPerShotInt[i]) - (spAmrInt[a] * atkPerShotInt[i]);
 
                         if (dpShotSpDbl[i] <= 0)
@@ -367,29 +367,30 @@ namespace StarCraft2Calculator
                             { dpShotSpDbl[i] = 0; }
                         }
                     }
-                    else
+                    else //Determines damage per shot for spell damage, which ignores armor and upgrades
                     {
                         dpShotDbl[i] = highestDmgInt[i] * atkPerShotInt[i];
                         dpShotSpDbl[i] = hiDmgSpInt[i] * atkPerShotInt[i];
                     }
                 }
-                else
+                else //Else the unit doesn't deal damage, set damage per shot to 0
                 {
                     dpShotDbl[i] = 0;
                     dpShotSpDbl[i] = 0;
                 }
             }
 
-            // Displays damage per shot
+            //Displays damage per shot
             lDmgShotStatLabel.Text = dpShotDbl[0].ToString();
             rDmgShotStatLabel.Text = dpShotDbl[1].ToString();
             lSpDmgShotStatLabel.Text = dpShotSpDbl[0].ToString();
             rSpDmgShotStatLabel.Text = dpShotSpDbl[1].ToString();
 
+            //Resets array variable so both sides can be checked in the methods
             i = 0;
         }
 
-        public void CalculateAirDmgPerShot()
+        public void CalculateAirDmgPerShot() //Does the same as above except for anti-air damage
         {
             int[] airHiDmgInt = new int[2];
             int[] airHiDmgSpInt = new int[2];
@@ -399,7 +400,7 @@ namespace StarCraft2Calculator
 
             for (i = 0; i < 2; i++)
             {
-                // If/else if statement differentiates between left and right values when both sides used for calculations
+                //If/else if statement differentiates between left and right values when both sides used for calculations
                 if (a == i && i == 1)
                 { a--; }
                 else if (a == i && i == 0)
@@ -407,7 +408,6 @@ namespace StarCraft2Calculator
 
                 if (airBox[a].Checked == true)
                 {
-                    // Determines highest possible damage before upgrades and armor deduction
                     if ((attDmg1String[i] == att1String[a] || attDmg1String[i] == att2String[a] || attDmg1String[i] == att3String[a]) && attDmg1String[i] != "")
                     { airAtt1BonusInt[i] = baseDmgInt[i] + attDmg1Int[i]; }
                     if ((attDmg2String[i] == att1String[a] || attDmg2String[i] == att2String[a] || attDmg2String[i] == att3String[a]) && attDmg2String[i] != "")
@@ -417,9 +417,6 @@ namespace StarCraft2Calculator
                     airHiDmgInt[i] = Math.Max(airDmgInt[i], Math.Max(airAtt1BonusInt[i], Math.Max(airAtt2BonusInt[i], airAtt3BonusInt[i])));
                     airHiDmgSpInt[i] = airHiDmgInt[i] + airSpDmgInt[i];
 
-                    // Determines damage per shot
-
-                    // Determines spellbox selection based on array number
                     if (airSpellBox[i].Checked == false)
                     {
                         int dmgUpgBonusInt;
@@ -462,44 +459,45 @@ namespace StarCraft2Calculator
                 }
             }
 
-            // Displays air damage per shot
+            //Displays anti-air damage per shot
             lAirDmgShotStatLabel.Text = airDpShotDbl[0].ToString();
             rAirDmgShotStatLabel.Text = airDpShotDbl[1].ToString();
             lAirSpDmgShotStatLabel.Text = airDpShotSpDbl[0].ToString();
             rAirSpDmgShotStatLabel.Text = airDpShotSpDbl[1].ToString();
 
+            //Resets array variable so both sides can be checked in the methods
             i = 0;
         }
 
         public void CalculateDmgPerSec()
         {
-            // Calculates ground weapon damage per second, avoiding division by 0
+            //Calculates ground weapon damage per second, avoiding division by 0
             for (i = 0; i < 2; i++)
             {
-                if (wpnCooldownDbl[i] != 0)
+                if (wpnCooldownDbl[i] != 0) //If weapon cooldown is not 0, damage per second is damage per shot divided by weapon cooldown
                 {
                     dpSecondDbl[i] = dpShotDbl[i] / wpnCooldownDbl[i];
                     dpSecondSpDbl[i] = dpShotSpDbl[i] / wpnCooldownDbl[i];
                 }
-                else
+                else //Otherwise the weapon does not fire, set damage per second to 0
                 {
                     dpSecondDbl[i] = 0;
                     dpSecondSpDbl[i] = 0;
                 }
             }
 
-            // Displays damage per second
+            //Displays damage per second
             lDmgSecStatLabel.Text = dpSecondDbl[0].ToString();
             rDmgSecStatLabel.Text = dpSecondDbl[1].ToString();
             lSpDmgSecStatLabel.Text = dpSecondSpDbl[0].ToString();
             rSpDmgSecStatLabel.Text = dpSecondSpDbl[1].ToString();
 
+            //Resets array variable so both sides can be checked in the methods
             i = 0;
         }
 
-        public void CalculateAirDmgPerSec()
+        public void CalculateAirDmgPerSec() //Same as above except for anti-air damage
         {
-            // Calculates air weapon damage per second, avoiding division by 0
             for (i = 0; i < 2; i++)
             {
                 if (airWpnCooldownDbl[i] != 0)
@@ -514,71 +512,79 @@ namespace StarCraft2Calculator
                 }
             }
 
-            // Displays damage per second
+            //Displays anti-air damage per second
             lAirDmgSecStatLabel.Text = airDpSecondDbl[0].ToString();
             rAirDmgSecStatLabel.Text = airDpSecondDbl[1].ToString();
             lAirSpDmgSecStatLabel.Text = airDpSecondSpDbl[0].ToString();
             rAirSpDmgSecStatLabel.Text = airDpSecondSpDbl[1].ToString();
 
+            //Resets array variable so both sides can be checked in the methods
             i = 0;
         }
 
         public void CalculateShotsToDestroy()
         {
-            // Calculates ground weapon shots to destroy, avoiding division by 0
+            //Calculate ground weapon shots to destroy opposing unit, avoiding division by 0
             for (i = 0; i < 2; i++)
             {
+                //If/else if statement differentiates between left and right values when both sides are used for calculations
                 if (a == i && i == 1)
                 { a--; }
                 else if (a == i && i == 0)
                 { a++; }
 
-                if (spellBox[i].Checked == false)
-                { totalSpDmgDbl[i] = spDmgInt[i] - spAmrInt[a]; }
-                else
-                { totalSpDmgDbl[i] = spDmgInt[i]; }
-
-                if (dpShotDbl[i] > 0 && dpShotSpDbl[i] > 0)
+                if (dpShotDbl[i] > 0 && dpShotSpDbl[i] > 0) //If normal damage per shot and shield damage per shot are more than 0
                 {
+                    //Calculate how many shots needed to deplete shields to less than one shot's damage
+                    shotsKillInt[i] = Convert.ToInt32(Math.Floor(spInt[a]/dpShotSpDbl[i]));
+                    spRemainingDbl[i] = spInt[a] % dpShotSpDbl[i]; //Calculate shields remaining after depleting to less than one shot's damage
+                    //Add rest of shots needed to destroy opposing unit
+                    shotsKillInt[i] += Convert.ToInt32(Math.Ceiling((hpInt[a] + spRemainingDbl[i]) / dpShotDbl[i]));
+                    overkillDbl[i] = dpShotDbl[i] - ((hpInt[a] + spRemainingDbl[i]) % dpShotDbl[i]); //Overkill of final shot
+
+                    //Below is the old way, simulating the firing of each shot by using loops
+                    /* //Calculate how many shots needed to deplete shields to less than one shot's damage
                     for (spRemainingDbl[i] = spInt[a]; spRemainingDbl[i] >= (spDmgInt[i] - spAmrInt[a]); spRemainingDbl[i] = spRemainingDbl[i] - dpShotSpDbl[i])
                     { shotCounterInt[i]++; }
 
-                    if (spRemainingDbl[i] > 0)
+                    if (spRemainingDbl[i] > 0) //If there are more than 0 opposing shield points remaining
                     {
-                        spRemainingDbl[i] = dpShotDbl[i] * -1;
+                        spRemainingDbl[i] -= dpShotDbl[i]; //Subtract normal shot damage from remaining opposing shields
                         shotCounterInt[i]++;
                     }
 
+                    //Calculate how many shots it takes to deplete the opponent's HP
                     for (hpRemainingDbl[i] = hpInt[a] + spRemainingDbl[i] + armorInt[a]; hpRemainingDbl[i] > 0; hpRemainingDbl[i] = hpRemainingDbl[i] - dpShotDbl[i])
                     { shotCounterInt[i]++; }
 
-                    shotsKillInt[i] = shotCounterInt[i];
-                    overkillDbl[i] = hpRemainingDbl[i] * -1;
+                    shotsKillInt[i] = shotCounterInt[i]; //Shots to kill equals the shot counter
+                    overkillDbl[i] = hpRemainingDbl[i] * -1; //Sets overkill to hp remaining value left unused after the above calculations */
                 }
-                else
+                else //Else there is no damage output -- set shots and overkill to 0
                 {
                     shotsKillInt[i] = 0;
                     overkillDbl[i] = 0;
                 }
             }
 
-            // Displays shots to destroy
+            //Displays shots to destroy
             lShotKillStatLabel.Text = shotsKillInt[0].ToString();
             rShotKillStatLabel.Text = shotsKillInt[1].ToString();
             
-            // Displays overkill
+            //Displays overkill
             lOverStatLabel.Text = overkillDbl[0].ToString();
             rOverStatLabel.Text = overkillDbl[1].ToString();
 
+            /* These are no longer needed with the new way
             shotCounterInt[0] = 0;
-            shotCounterInt[1] = 0;
+            shotCounterInt[1] = 0; */
 
+            //Resets array variable so both sides can be checked in the methods
             i = 0;
         }
 
-        public void CalculateAirShotsToDestroy()
+        public void CalculateAirShotsToDestroy() //Does the same as above, except for anti-air damage
         {
-            // Calculates air weapon shots to destroy, avoiding division by 0
             for (i = 0; i < 2; i++)
             {
                 if (a == i && i == 1)
@@ -586,13 +592,16 @@ namespace StarCraft2Calculator
                 else if (a == i && i == 0)
                 { a++; }
 
-                if (spellBox[i].Checked == false)
-                { totalSpDmgDbl[i] = airSpDmgInt[i] - spAmrInt[a]; }
-                else
-                { totalSpDmgDbl[i] = airSpDmgInt[i]; }
-
                 if (airDpShotDbl[i] > 0 && airDpShotSpDbl[i] > 0)
                 {
+                    //Calculate how many shots needed to deplete shields to less than one shot's damage
+                    airShotsKillInt[i] = Convert.ToInt32(Math.Floor(spInt[a] / airDpShotSpDbl[i]));
+                    spRemainingDbl[i] = spInt[a] % airDpShotSpDbl[i]; //Calculate shields remaining after depleting to less than one shot's damage
+                    //Add rest of shots needed to destroy opposing unit
+                    airShotsKillInt[i] += Convert.ToInt32(Math.Ceiling((hpInt[a] + spRemainingDbl[i]) / airDpShotDbl[i]));
+                    airOverkillDbl[i] = airDpShotDbl[i] - ((hpInt[a] + spRemainingDbl[i]) % airDpShotDbl[i]); //Overkill of final shot
+
+                    /* //Old way, simulating the firing of each shot by using loops
                     for (spRemainingDbl[i] = spInt[a]; spRemainingDbl[i] >= (airSpDmgInt[i] - spAmrInt[a]); spRemainingDbl[i] = spRemainingDbl[i] - airDpShotSpDbl[i])
                     { shotCounterInt[i]++; }
 
@@ -606,7 +615,7 @@ namespace StarCraft2Calculator
                     { shotCounterInt[i]++; }
 
                     airShotsKillInt[i] = shotCounterInt[i];
-                    airOverkillDbl[i] = hpRemainingDbl[i] * -1;
+                    airOverkillDbl[i] = hpRemainingDbl[i] * -1; */
                 }
                 else
                 {
@@ -615,47 +624,50 @@ namespace StarCraft2Calculator
                 }
             }
 
-            // Displays shots to destroy
+            //Displays anti-air shots to destroy
             lAirShotKillStatLabel.Text = airShotsKillInt[0].ToString();
             rAirShotKillStatLabel.Text = airShotsKillInt[1].ToString();
 
-            // Displays overkill
+            //Displays anti-air overkill
             lAirOverStatLabel.Text = airOverkillDbl[0].ToString();
             rAirOverStatLabel.Text = airOverkillDbl[1].ToString();
 
+            /* These are no longer needed with the new way
             shotCounterInt[0] = 0;
-            shotCounterInt[1] = 0;
+            shotCounterInt[1] = 0; */
 
+            //Resets array variable so both sides can be checked in the methods
             i = 0;
         }
 
         public void CalculateSecondsToDestroy()
         {
-            // Calculates ground weapon seconds to destroy
+            //Calculates seconds to destroy by multiplying shots to destroy by weapon cooldown
             for (i = 0; i < 2; i++)
             { secKillDbl[i] = shotsKillInt[i] * wpnCooldownDbl[i]; }
 
-            // Displays seconds to destroy
+            //Displays seconds to destroy
             lSecKillStatLabel.Text = secKillDbl[0].ToString();
             rSecKillStatLabel.Text = secKillDbl[1].ToString();
 
+            //Resets array variable so both sides can be checked in the methods
             i = 0;
         }
 
-        public void CalculateAirSecondsToDestroy()
+        public void CalculateAirSecondsToDestroy() //Same as above but for anti-air
         {
-            // Calculates air weapon seconds to destroy
             for (i = 0; i < 2; i++)
             { airSecKillDbl[i] = airShotsKillInt[i] * airWpnCooldownDbl[i]; }
 
-            // Displays seconds to destroy
+            //Displays anti-air seconds to destroy
             lAirSecKillStatLabel.Text = airSecKillDbl[0].ToString();
             rAirSecKillStatLabel.Text = airSecKillDbl[1].ToString();
 
+            //Resets array variable so both sides can be checked in the methods
             i = 0;
         }
 
-        private void lMaxUpgBtn_Click(object sender, EventArgs e)
+        private void lMaxUpgBtn_Click(object sender, EventArgs e) //Maxes out upgrades for the left side unit
         {
             tb_Clicked(sender, e);
             lAmrUpgTextBox.Text = "3";
@@ -663,7 +675,7 @@ namespace StarCraft2Calculator
             lWpnUpgTextBox.Text = "3";
         }
 
-        private void lClrUpgBtn_Click(object sender, EventArgs e)
+        private void lClrUpgBtn_Click(object sender, EventArgs e) //Clears upgrades for the left side unit
         {
             tb_Clicked(sender, e);
             lAmrUpgTextBox.Text = "0";
@@ -671,7 +683,7 @@ namespace StarCraft2Calculator
             lWpnUpgTextBox.Text = "0";
         }
 
-        private void rMaxUpgBtn_Click(object sender, EventArgs e)
+        private void rMaxUpgBtn_Click(object sender, EventArgs e) //Maxes out upgrades for the right side unit
         {
             tb_Clicked(sender, e);
             rAmrUpgTextBox.Text = "3";
@@ -679,7 +691,7 @@ namespace StarCraft2Calculator
             rWpnUpgTextBox.Text = "3";
         }
 
-        private void rClrUpgBtn_Click(object sender, EventArgs e)
+        private void rClrUpgBtn_Click(object sender, EventArgs e) //Clears upgrades for the right side unit
         {
             tb_Clicked(sender, e);
             rAmrUpgTextBox.Text = "0";
