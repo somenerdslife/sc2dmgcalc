@@ -185,11 +185,6 @@
             this.rAirDmgShotLabel = new System.Windows.Forms.Label();
             this.rAirSpDmgShotStatLabel = new System.Windows.Forms.Label();
             this.ttpInfo = new System.Windows.Forms.ToolTip(this.components);
-            this.unitDataDataSet = new StarCraft2Calculator.unitDataDataSet();
-            this.attTableTableAdapter = new StarCraft2Calculator.unitDataDataSetTableAdapters.attTableTableAdapter();
-            this.tableAdapterManager = new StarCraft2Calculator.unitDataDataSetTableAdapters.TableAdapterManager();
-            this.tableTableAdapter = new StarCraft2Calculator.unitDataDataSetTableAdapters.TableTableAdapter();
-            ((System.ComponentModel.ISupportInitialize)(this.unitDataDataSet)).BeginInit();
             this.SuspendLayout();
             // 
             // separatorLabel
@@ -568,26 +563,24 @@
             // rUnitComboBox
             // 
             this.rUnitComboBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.rUnitComboBox.DisplayMember = "UnitTableR.UnitName";
-            this.rUnitComboBox.FormattingEnabled = true;
             this.rUnitComboBox.Location = new System.Drawing.Point(501, 115);
             this.rUnitComboBox.Name = "rUnitComboBox";
             this.rUnitComboBox.Size = new System.Drawing.Size(193, 21);
             this.rUnitComboBox.TabIndex = 37;
-            this.rUnitComboBox.ValueMember = "UnitTableR.UnitName";
+            this.rUnitComboBox.ValueMember = "unitName";
             this.rUnitComboBox.Click += new System.EventHandler(this.tb_Clicked);
             // 
             // lUnitComboBox
             // 
             this.lUnitComboBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.lUnitComboBox.DisplayMember = "UnitTable.UnitName";
             this.lUnitComboBox.FormattingEnabled = true;
+            this.lUnitComboBox.IntegralHeight = false;
             this.lUnitComboBox.Location = new System.Drawing.Point(207, 115);
             this.lUnitComboBox.Name = "lUnitComboBox";
             this.lUnitComboBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.lUnitComboBox.Size = new System.Drawing.Size(195, 21);
+            this.lUnitComboBox.Size = new System.Drawing.Size(193, 21);
             this.lUnitComboBox.TabIndex = 4;
-            this.lUnitComboBox.ValueMember = "UnitTable.UnitName";
+            this.lUnitComboBox.ValueMember = "unitName";
             this.lUnitComboBox.Click += new System.EventHandler(this.tb_Clicked);
             // 
             // rAttDmg2ComboBox
@@ -2492,26 +2485,6 @@
             this.ttpInfo.InitialDelay = 160;
             this.ttpInfo.ReshowDelay = 160;
             // 
-            // unitDataDataSet
-            // 
-            this.unitDataDataSet.DataSetName = "unitDataDataSet";
-            this.unitDataDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
-            // attTableTableAdapter
-            // 
-            this.attTableTableAdapter.ClearBeforeFill = true;
-            // 
-            // tableAdapterManager
-            // 
-            this.tableAdapterManager.attTableTableAdapter = this.attTableTableAdapter;
-            this.tableAdapterManager.BackupDataSetBeforeUpdate = false;
-            this.tableAdapterManager.TableTableAdapter = this.tableTableAdapter;
-            this.tableAdapterManager.UpdateOrder = StarCraft2Calculator.unitDataDataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
-            // 
-            // tableTableAdapter
-            // 
-            this.tableTableAdapter.ClearBeforeFill = true;
-            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2675,10 +2648,9 @@
             this.Controls.Add(this.lAirDmgLabel);
             this.Controls.Add(this.rAirDmgShotLabel);
             this.Name = "mainForm";
-            this.Text = "StarCraft II Damage Calculator - V0.1";
+            this.Text = "StarCraft II Damage Calculator";
             this.Load += new System.EventHandler(this.mainForm_Load);
             this.Click += new System.EventHandler(this.tb_Clicked);
-            ((System.ComponentModel.ISupportInitialize)(this.unitDataDataSet)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2841,10 +2813,6 @@
         private System.Windows.Forms.Label rAirDmgShotLabel;
         private System.Windows.Forms.Label rAirSpDmgShotStatLabel;
         private System.Windows.Forms.ToolTip ttpInfo;
-        private unitDataDataSet unitDataDataSet;
-        private unitDataDataSetTableAdapters.attTableTableAdapter attTableTableAdapter;
-        private unitDataDataSetTableAdapters.TableAdapterManager tableAdapterManager;
-        private unitDataDataSetTableAdapters.TableTableAdapter tableTableAdapter;
     }
 }
 

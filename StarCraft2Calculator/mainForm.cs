@@ -78,7 +78,12 @@ namespace StarCraft2Calculator
         int a;
 
         public mainForm()
-        { InitializeComponent(); }
+        { InitializeComponent(); UpdateItems(); }
+
+        private void ComboBox_TextUpdate(Object sender, EventArgs e)
+        {
+
+        }
 
         //Calculates as the user changes input
         private void tb_TextChanged(object sender, EventArgs e)
@@ -546,7 +551,16 @@ namespace StarCraft2Calculator
                     spRemainingDbl[i] = spInt[a] % dpShotSpDbl[i]; //Calculate shields remaining after depleting to less than one shot's damage
                     //Add rest of shots needed to destroy opposing unit
                     shotsKillInt[i] += Convert.ToInt32(Math.Ceiling((hpInt[a] + spRemainingDbl[i]) / dpShotDbl[i]));
-                    overkillDbl[i] = dpShotDbl[i] - ((hpInt[a] + spRemainingDbl[i]) % dpShotDbl[i]); //Overkill of final shot
+                    if (hpInt[a] > 0) //Overkill for units with HP
+                    {
+                        overkillDbl[i] = dpShotDbl[i] - ((hpInt[a] + spRemainingDbl[i]) % dpShotDbl[i]); //Overkill of final shot
+                        if (overkillDbl[i] == dpShotDbl[i]) { overkillDbl[i] = 0; } //If overkill is equal to damage per shot, no overkill
+                    }
+                    else //Overkill if unit only has shields
+                    {
+                        overkillDbl[i] = dpShotSpDbl[i] - (spRemainingDbl[i] % dpShotSpDbl[i]); //Overkill of final shot
+                        if (overkillDbl[i] == dpShotSpDbl[i]) { overkillDbl[i] = 0; } //If overkill is equal to damage per shot, no overkill
+                    }
 
                     //Below is the old way, simulating the firing of each shot by using loops
                     /* //Calculate how many shots needed to deplete shields to less than one shot's damage
@@ -606,6 +620,7 @@ namespace StarCraft2Calculator
                     //Add rest of shots needed to destroy opposing unit
                     airShotsKillInt[i] += Convert.ToInt32(Math.Ceiling((hpInt[a] + spRemainingDbl[i]) / airDpShotDbl[i]));
                     airOverkillDbl[i] = airDpShotDbl[i] - ((hpInt[a] + spRemainingDbl[i]) % airDpShotDbl[i]); //Overkill of final shot
+                    if (airOverkillDbl[i] == airDpShotDbl[i]) { overkillDbl[i] = 0; } //If overkill is equal to damage per shot, no overkill
 
                     /* //Old way, simulating the firing of each shot by using loops
                     for (spRemainingDbl[i] = spInt[a]; spRemainingDbl[i] >= (airSpDmgInt[i] - spAmrInt[a]); spRemainingDbl[i] = spRemainingDbl[i] - airDpShotSpDbl[i])
@@ -707,11 +722,177 @@ namespace StarCraft2Calculator
 
         private void mainForm_Load(object sender, EventArgs e)
         {
-            /* This may be useful later for connecting the database
-            DataTable dt = new DataTable();
-            int positionInt = 0;
-            dt.TableName = "Table";
-            string dataSourceString = "SELECT * FROM Table"; */
+            
+        }
+        private void UpdateItems()
+        {
+            //Connecting to database
+            //Need to make connection string dynamic
+            using (SqlConnection con = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename='D:\Visual Studio Projects\StarCraft2Calculator\StarCraft2Calculator\unitData.mdf';Integrated Security=True"))
+            {
+                con.Open();
+                
+                //Adapter, DataSet, and BindingSources for filling attribute ComboBoxes
+                SqlDataAdapter AttTableTableAdapter = new SqlDataAdapter("SELECT * FROM attTable", con);
+                DataSet ads = new DataSet();
+                AttTableTableAdapter.Fill(ads, "attTable");
+                BindingSource lAtt1BindingSource = new BindingSource { DataSource = ads.Tables["attTable"].DefaultView };
+                BindingSource rAtt1BindingSource = new BindingSource { DataSource = ads.Tables["attTable"].DefaultView };
+                BindingSource lAtt2BindingSource = new BindingSource { DataSource = ads.Tables["attTable"].DefaultView };
+                BindingSource rAtt2BindingSource = new BindingSource { DataSource = ads.Tables["attTable"].DefaultView };
+                BindingSource lAtt3BindingSource = new BindingSource { DataSource = ads.Tables["attTable"].DefaultView };
+                BindingSource rAtt3BindingSource = new BindingSource { DataSource = ads.Tables["attTable"].DefaultView };
+                BindingSource lBonusAtt1BindingSource = new BindingSource { DataSource = ads.Tables["attTable"].DefaultView };
+                BindingSource rBonusAtt1BindingSource = new BindingSource { DataSource = ads.Tables["attTable"].DefaultView };
+                BindingSource lBonusAtt2BindingSource = new BindingSource { DataSource = ads.Tables["attTable"].DefaultView };
+                BindingSource rBonusAtt2BindingSource = new BindingSource { DataSource = ads.Tables["attTable"].DefaultView };
+                BindingSource lBonusAtt3BindingSource = new BindingSource { DataSource = ads.Tables["attTable"].DefaultView };
+                BindingSource rBonusAtt3BindingSource = new BindingSource { DataSource = ads.Tables["attTable"].DefaultView };
+
+                //Filling the attribute ComboBoxes
+                lAtt1ComboBox.DataSource = lAtt1BindingSource;
+                lAtt1ComboBox.DisplayMember = "attName";
+                lAtt1ComboBox.ValueMember = "attName";
+
+                rAtt1ComboBox.DataSource = rAtt1BindingSource;
+                rAtt1ComboBox.DisplayMember = "attName";
+                rAtt1ComboBox.ValueMember = "attName";
+
+                lAtt2ComboBox.DataSource = lAtt2BindingSource;
+                lAtt2ComboBox.DisplayMember = "attName";
+                lAtt2ComboBox.ValueMember = "attName";
+
+                rAtt2ComboBox.DataSource = rAtt2BindingSource;
+                rAtt2ComboBox.DisplayMember = "attName";
+                rAtt2ComboBox.ValueMember = "attName";
+
+                lAtt3ComboBox.DataSource = lAtt3BindingSource;
+                lAtt3ComboBox.DisplayMember = "attName";
+                lAtt3ComboBox.ValueMember = "attName";
+
+                rAtt3ComboBox.DataSource = rAtt3BindingSource;
+                rAtt3ComboBox.DisplayMember = "attName";
+                rAtt3ComboBox.ValueMember = "attName";
+
+                lAttDmg1ComboBox.DataSource = lBonusAtt1BindingSource;
+                lAttDmg1ComboBox.DisplayMember = "attName";
+                lAttDmg1ComboBox.ValueMember = "attName";
+
+                rAttDmg1ComboBox.DataSource = rBonusAtt1BindingSource;
+                rAttDmg1ComboBox.DisplayMember = "attName";
+                rAttDmg1ComboBox.ValueMember = "attName";
+
+                lAttDmg2ComboBox.DataSource = lBonusAtt2BindingSource;
+                lAttDmg2ComboBox.DisplayMember = "attName";
+                lAttDmg2ComboBox.ValueMember = "attName";
+
+                rAttDmg2ComboBox.DataSource = rBonusAtt2BindingSource;
+                rAttDmg2ComboBox.DisplayMember = "attName";
+                rAttDmg2ComboBox.ValueMember = "attName";
+
+                lAttDmg3ComboBox.DataSource = lBonusAtt3BindingSource;
+                lAttDmg3ComboBox.DisplayMember = "attName";
+                lAttDmg3ComboBox.ValueMember = "attName";
+
+                rAttDmg3ComboBox.DataSource = rBonusAtt3BindingSource;
+                rAttDmg3ComboBox.DisplayMember = "attName";
+                rAttDmg3ComboBox.ValueMember = "attName";
+
+                //Adapter, DataSet, and BindingSources for filling in unit data
+                SqlDataAdapter UnitTableTableAdapter = new SqlDataAdapter("SELECT * FROM [Table]", con);
+                DataSet ds = new DataSet();
+                UnitTableTableAdapter.Fill(ds, "Table");
+                BindingSource lBindingSource = new BindingSource { DataSource = ds.Tables["Table"].DefaultView };
+                BindingSource rBindingSource = new BindingSource { DataSource = ds.Tables["Table"].DefaultView };
+
+                //Filling in ComboBoxes with unit names
+                lUnitComboBox.DataSource = lBindingSource;
+                lUnitComboBox.DisplayMember = "unitName";
+                lUnitComboBox.ValueMember = "unitName";
+
+                rUnitComboBox.DataSource = rBindingSource;
+                rUnitComboBox.DisplayMember = "unitName";
+                rUnitComboBox.ValueMember = "unitName";
+
+                //Filling in unit info based on selected unit
+                lAirBox.DataBindings.Add("Checked", lBindingSource, "isAirUnit");
+                lGroundBox.DataBindings.Add("Checked", lBindingSource, "isGroundUnit");
+
+                rAirBox.DataBindings.Add("Checked", rBindingSource, "isAirUnit");
+                rGroundBox.DataBindings.Add("Checked", rBindingSource, "isGroundUnit");
+
+                lAtt1ComboBox.DataBindings.Add("Text", lBindingSource, "UnitAtt1");
+                lAtt2ComboBox.DataBindings.Add("Text", lBindingSource, "UnitAtt2");
+                lAtt3ComboBox.DataBindings.Add("Text", lBindingSource, "UnitAtt3");
+
+                rAtt1ComboBox.DataBindings.Add("Text", rBindingSource, "UnitAtt1");
+                rAtt2ComboBox.DataBindings.Add("Text", rBindingSource, "UnitAtt2");
+                rAtt3ComboBox.DataBindings.Add("Text", rBindingSource, "UnitAtt3");
+
+                lHpTextBox.DataBindings.Add("Text", lBindingSource, "unitHp");
+                lSpTextBox.DataBindings.Add("Text", lBindingSource, "unitSp");
+
+                rHpTextBox.DataBindings.Add("Text", rBindingSource, "unitHp");
+                rSpTextBox.DataBindings.Add("Text", rBindingSource, "unitSp");
+
+                lBseAmrTextBox.DataBindings.Add("Text", lBindingSource, "unitBaseAmr");
+                lSpAmrTextBox.DataBindings.Add("Text", lBindingSource, "unitBaseSpAmr");
+
+                rBseAmrTextBox.DataBindings.Add("Text", rBindingSource, "unitBaseAmr");
+                rSpAmrTextBox.DataBindings.Add("Text", rBindingSource, "unitBaseSpAmr");
+
+                lSpellBox.DataBindings.Add("Checked", lBindingSource, "isSpellDamage");
+                lAirSpellBox.DataBindings.Add("Checked", lBindingSource, "isAirSpellDmg");
+
+                rSpellBox.DataBindings.Add("Checked", rBindingSource, "isSpellDamage");
+                rAirSpellBox.DataBindings.Add("Checked", rBindingSource, "isAirSpellDmg");
+
+                lBseDmgTextBox.DataBindings.Add("Text", lBindingSource, "baseDamage");
+                lShieldDmgTextBox.DataBindings.Add("Text", lBindingSource, "baseSpDamage");
+                lAirDmgTextBox.DataBindings.Add("Text", lBindingSource, "baseAirDamage");
+                lAirShieldDmgTextBox.DataBindings.Add("Text", lBindingSource, "baseAirSpDmg");
+
+                rBseDmgTextBox.DataBindings.Add("Text", rBindingSource, "baseDamage");
+                rShieldDmgTextBox.DataBindings.Add("Text", rBindingSource, "baseSpDamage");
+                rAirDmgTextBox.DataBindings.Add("Text", rBindingSource, "baseAirDamage");
+                rAirShieldDmgTextBox.DataBindings.Add("Text", rBindingSource, "baseAirSpDmg");
+
+                lAttDmg1TextBox.DataBindings.Add("Text", lBindingSource, "bonusAttDmg1");
+                lAirAttDmg1TextBox.DataBindings.Add("Text", lBindingSource, "bonusAirAttDmg1");
+                lAttDmg1ComboBox.DataBindings.Add("Text", lBindingSource, "bonusAttType1");
+
+                rAttDmg1TextBox.DataBindings.Add("Text", rBindingSource, "bonusAttDmg1");
+                rAirAttDmg1TextBox.DataBindings.Add("Text", rBindingSource, "bonusAirAttDmg1");
+                rAttDmg1ComboBox.DataBindings.Add("Text", rBindingSource, "bonusAttType1");
+
+                lAttDmg2TextBox.DataBindings.Add("Text", lBindingSource, "bonusAttDmg2");
+                lAirAttDmg2TextBox.DataBindings.Add("Text", lBindingSource, "bonusAirAttDmg2");
+                lAttDmg2ComboBox.DataBindings.Add("Text", lBindingSource, "bonusAttType2");
+
+                rAttDmg2TextBox.DataBindings.Add("Text", rBindingSource, "bonusAttDmg2");
+                rAirAttDmg2TextBox.DataBindings.Add("Text", rBindingSource, "bonusAirAttDmg2");
+                rAttDmg2ComboBox.DataBindings.Add("Text", rBindingSource, "bonusAttType2");
+
+                lAttDmg3TextBox.DataBindings.Add("Text", lBindingSource, "bonusAttDmg3");
+                lAirAttDmg3TextBox.DataBindings.Add("Text", lBindingSource, "bonusAirAttDmg3");
+                lAttDmg3ComboBox.DataBindings.Add("Text", lBindingSource, "bonusAttType3");
+
+                rAttDmg3TextBox.DataBindings.Add("Text", rBindingSource, "bonusAttDmg3");
+                rAirAttDmg3TextBox.DataBindings.Add("Text", rBindingSource, "bonusAirAttDmg3");
+                rAttDmg3ComboBox.DataBindings.Add("Text", rBindingSource, "bonusAttType3");
+
+                lAtkPerShotTextBox.DataBindings.Add("Text", lBindingSource, "attacksPerShot");
+                lAirAtkShotTextBox.DataBindings.Add("Text", lBindingSource, "airAttacksPerShot");
+
+                rAtkPerShotTextBox.DataBindings.Add("Text", rBindingSource, "attacksPerShot");
+                rAirAtkShotTextBox.DataBindings.Add("Text", rBindingSource, "airAttacksPerShot");
+
+                lWpnCldnTextBox.DataBindings.Add("Text", lBindingSource, "wpnCooldown");
+                lAirWpnCldnTextBox.DataBindings.Add("Text", lBindingSource, "airWpnCooldown");
+
+                rWpnCldnTextBox.DataBindings.Add("Text", rBindingSource, "wpnCooldown");
+                rAirWpnCldnTextBox.DataBindings.Add("Text", rBindingSource, "airWpnCooldown");
+            }
         }
     }
 }
